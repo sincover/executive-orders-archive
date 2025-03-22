@@ -14,12 +14,34 @@ The Executive Orders Archive provides a comprehensive platform for accessing, an
 - Integration with Federal Register data
 - Regular updates for new Executive Orders
 
+## Project Status
+
+### Sprint 1 Completed
+- ✅ Environment setup
+- ✅ Backend setup
+- ✅ Database setup
+- ✅ Federal Register API integration
+- ✅ Backend API endpoints
+- ✅ Data fetching functionality
+- ✅ Backend tests
+
+### Coming in Sprint 2
+- Frontend development
+- User interface design
+- Interactive visualizations
+- Authentication system
+- Advanced search capabilities
+
 ## Project Structure
 
 ```
 executive-orders-archive/
 ├── backend/           # Flask backend application
 │   ├── app/          # Application code
+│   │   ├── models/   # Database models
+│   │   ├── routes/   # API routes
+│   │   ├── services/ # Business logic
+│   │   └── utils/    # Utility functions
 │   ├── tests/        # Test suite
 │   └── README.md     # Backend documentation
 ├── frontend/         # React frontend application (coming in Sprint 2)
@@ -34,9 +56,8 @@ executive-orders-archive/
 
 ### Prerequisites
 
-- Python 3.10+
-- PostgreSQL 14+
-- Node.js 18+ (for frontend, coming in Sprint 2)
+- Python 3.9+
+- PostgreSQL 17+
 - Redis (for task queue)
 
 ### Backend Setup
@@ -48,8 +69,8 @@ executive-orders-archive/
 
 2. Create and activate a virtual environment:
    ```powershell
-   python -m venv venv
-   .\venv\Scripts\Activate.ps1
+   python -m venv .venv
+   .\.venv\Scripts\Activate.ps1
    ```
 
 3. Install dependencies:
@@ -63,6 +84,8 @@ executive-orders-archive/
 
 5. Initialize the database:
    ```powershell
+   flask db init
+   flask db migrate -m "Initial migration"
    flask db upgrade
    ```
 
@@ -71,9 +94,22 @@ executive-orders-archive/
    flask run
    ```
 
+7. Optional: Run data fetch script to populate the database:
+   ```powershell
+   python scripts/fetch_data.py --days-back 365
+   ```
+
 ### Frontend Setup
 
 Frontend setup instructions will be added in Sprint 2.
+
+## API Endpoints
+
+The backend provides the following API endpoints:
+
+- `GET /api/v1/executive-orders`: Get a list of executive orders with filtering, sorting, and pagination
+- `GET /api/v1/executive-orders/{eo_id}`: Get a single executive order by ID
+- `GET /api/v1/latest-executive-orders`: Get the latest executive orders
 
 ## Development
 
