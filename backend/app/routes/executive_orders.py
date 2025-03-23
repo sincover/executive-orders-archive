@@ -10,7 +10,20 @@ logger = logging.getLogger(__name__)
 
 @bp.route('/executive-orders', methods=['GET'])
 def get_executive_orders():
-    """Get a list of executive orders with filtering options."""
+    """
+    Get a list of executive orders with filtering options.
+    
+    Query Parameters:
+        president (str): Filter by president
+        year (int): Filter by year
+        page (int): Page number (default: 1)
+        per_page (int): Items per page (default: 20)
+        sort (str): Sort field (default: issuance_date)
+        order (str): Sort order (asc or desc, default: desc)
+    
+    Returns:
+        JSON response with executive orders and pagination metadata
+    """
     try:
         # Parse query parameters
         page = request.args.get('page', 1, type=int)
@@ -61,39 +74,79 @@ def get_executive_orders():
         logger.error(f"Error retrieving executive orders: {str(e)}")
         return server_error(f"An error occurred while retrieving executive orders: {str(e)}")
 
+
 @bp.route('/executive-orders/<string:eo_id>', methods=['GET'])
 def get_executive_order(eo_id):
-    """Get a single executive order by ID."""
+    """
+    Get a single executive order by ID.
+    
+    Args:
+        eo_id (str): Executive order ID
+    
+    Returns:
+        JSON response with executive order data
+    """
     try:
+        # Find executive order by ID
         executive_order = ExecutiveOrder.query.get(eo_id)
         
+        # Return 404 if not found
         if not executive_order:
             return not_found(f"Executive order with ID '{eo_id}' not found")
         
+        # Return the executive order data
         return success_response(data=executive_order.to_dict())
     
     except Exception as e:
         logger.error(f"Error retrieving executive order {eo_id}: {str(e)}")
         return server_error(f"An error occurred while retrieving the executive order: {str(e)}")
 
+
 @bp.route('/latest-executive-orders', methods=['GET'])
 def get_latest_executive_orders():
-    """Get the latest executive orders."""
+    """
+    Get the latest executive orders.
+    
+    Query Parameters:
+        limit (int): Number of executive orders to return (default: 10, max: 100)
+    
+    Returns:
+        JSON response with the latest executive orders
+    """
     try:
+        # Parse query parameters
         limit = request.args.get('limit', 10, type=int)
         
+        # Validate limit
         if limit < 1 or limit > 100:
             limit = 10
         
+        # Query for latest executive orders by issuance date
         latest_orders = ExecutiveOrder.query \
             .order_by(desc(ExecutiveOrder.issuance_date)) \
             .limit(limit) \
             .all()
         
+        # Format results
         results = [eo.to_dict() for eo in latest_orders]
         
+        # Return response
         return success_response(data=results)
     
     except Exception as e:
         logger.error(f"Error retrieving latest executive orders: {str(e)}")
         return server_error(f"An error occurred while retrieving the latest executive orders: {str(e)}")
+
+
+# Register error handlers for common HTTP errors
+@bp.errorhandler(404)
+def handle_not_found(e):
+    return not_found(str(e))
+
+@bp.errorhandler(400)
+def handle_bad_request(e):
+    return bad_request(str(e))
+
+@bp.errorhandler(500)
+def handle_server_error(e):
+    return server_error(str(e))
