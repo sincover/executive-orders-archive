@@ -1,24 +1,36 @@
-from app.database import db
+from app.models import Base
+from sqlalchemy import Column, String, Date, Text, DateTime
 from datetime import datetime
 
-class ExecutiveOrder(db.Model):
+class ExecutiveOrder(Base):
+    """
+    Executive Order database model.
+    
+    Represents a presidential executive order stored in the database.
+    """
     __tablename__ = 'executive_orders'
     
-    id = db.Column(db.String(20), primary_key=True)
-    title = db.Column(db.String(255), nullable=False)
-    issuance_date = db.Column(db.Date, nullable=False)
-    president = db.Column(db.String(100), nullable=False)
-    federal_register_citation = db.Column(db.String(50), nullable=True)
-    url = db.Column(db.String(255), nullable=True)
-    plain_language_summary = db.Column(db.Text, nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    id = Column(String(20), primary_key=True)
+    title = Column(String(255), nullable=False)
+    issuance_date = Column(Date, nullable=False)
+    president = Column(String(100), nullable=False)
+    federal_register_citation = Column(String(50), nullable=True)
+    url = Column(String(255), nullable=True)
+    plain_language_summary = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     def __repr__(self):
-        return f"<ExecutiveOrder {self.id}: {self.title}>"
+        """String representation of the Executive Order."""
+        return f"<ExecutiveOrder(id='{self.id}', title='{self.title[:30]}...', president='{self.president}')>"
     
     def to_dict(self):
-        """Convert the model instance to a dictionary."""
+        """
+        Convert the model instance to a dictionary.
+        
+        Returns:
+            dict: Dictionary representation of the executive order
+        """
         return {
             'id': self.id,
             'title': self.title,
