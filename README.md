@@ -25,12 +25,14 @@ The Executive Orders Archive provides a comprehensive platform for accessing, an
 - ✅ Data fetching functionality
 - ✅ Backend tests
 
-### Coming in Sprint 2
-- Frontend development
-- User interface design
-- Interactive visualizations
-- Authentication system
-- Advanced search capabilities
+### Sprint 2 In Progress
+- ✅ Frontend project setup
+- ✅ API client infrastructure
+- ✅ TanStack Query integration
+- 🔄 User interface components
+- 🔄 Interactive visualizations
+- 🔄 Authentication system
+- 🔄 Advanced search capabilities
 
 ## Project Structure
 
@@ -44,7 +46,14 @@ executive-orders-archive/
 │   │   └── utils/    # Utility functions
 │   ├── tests/        # Test suite
 │   └── README.md     # Backend documentation
-├── frontend/         # React frontend application (coming in Sprint 2)
+├── frontend/         # React frontend application
+│   ├── src/          # Source code
+│   │   ├── components/ # React components
+│   │   ├── pages/      # Page components
+│   │   ├── services/   # API services and queries
+│   │   ├── types/      # TypeScript definitions
+│   │   └── utils/      # Utility functions
+│   ├── public/       # Static assets
 │   └── README.md     # Frontend documentation
 ├── docs/            # Project documentation
 ├── .gitignore       # Git ignore rules
@@ -59,6 +68,7 @@ executive-orders-archive/
 - Python 3.9+
 - PostgreSQL 17+
 - Redis (for task queue)
+- Node.js 18+ (for frontend)
 
 ### Backend Setup
 
@@ -101,7 +111,24 @@ executive-orders-archive/
 
 ### Frontend Setup
 
-Frontend setup instructions will be added in Sprint 2.
+1. Navigate to the frontend directory:
+   ```powershell
+   cd frontend
+   ```
+
+2. Install dependencies:
+   ```powershell
+   npm install
+   ```
+
+3. Configure environment variables:
+   - Copy `.env.example` to `.env.local`
+   - Update the values if needed (defaults should work with local backend)
+
+4. Run the development server:
+   ```powershell
+   npm run dev
+   ```
 
 ## API Endpoints
 
@@ -110,6 +137,8 @@ The backend provides the following API endpoints:
 - `GET /api/v1/executive-orders`: Get a list of executive orders with filtering, sorting, and pagination
 - `GET /api/v1/executive-orders/{eo_id}`: Get a single executive order by ID
 - `GET /api/v1/latest-executive-orders`: Get the latest executive orders
+- `GET /api/v1/executive-orders/stats`: Get statistics about executive orders
+- `GET /api/v1/executive-orders/{eo_id}/related`: Get orders related to a specific executive order
 
 ## Development
 
