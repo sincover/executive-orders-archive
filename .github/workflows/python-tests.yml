@@ -1,0 +1,65 @@
+name: Python Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/python-tests.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/python-tests.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: eo_app_user
+          POSTGRES_PASSWORD: eo_app_password
+          POSTGRES_DB: executive_orders_archive_test
+        ports:
+          - 5432:5432
+        options: >
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.9'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        cd backend
+        pip install -r requirements.txt
+        pip install pytest pytest-cov
+        
+    - name: Run tests with pytest
+      env:
+        FLASK_ENV: testing
+        TEST_DATABASE_URL: postgresql://eo_app_user:eo_app_password@localhost/executive_orders_archive_test
+      run: |
+        cd backend
+        pytest -v --cov=app tests/
+        
+    - name: Generate coverage report
+      run: |
+        cd backend
+        pytest --cov=app --cov-report=xml tests/
+        
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./backend/coverage.xml
+        fail_ci_if_error: false
